@@ -2,7 +2,11 @@
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const cfg = window.OFFICEFLOW_CONFIG || {};
+  const defaultConfig = {
+    supabaseUrl: 'https://qikxqtqpkgghmstliped.supabase.co',
+    supabaseAnonKey: 'sb_publishable_y8mGbwlA89GOl5Mo7lDwVg_fXXfjtWS'
+  };
+  const cfg = { ...defaultConfig, ...(window.OFFICEFLOW_CONFIG || {}) };
   const configured = !!(cfg.supabaseUrl && cfg.supabaseAnonKey && !cfg.supabaseUrl.includes('YOUR-PROJECT') && !cfg.supabaseAnonKey.includes('YOUR-SUPABASE'));
   const sb = configured ? supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
 
