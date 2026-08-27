@@ -1,14 +1,14 @@
 # OfficeFlow Pro v2
 
-A modern multi-user office-work workspace built around Supabase.
+A modern multi-user office-work workspace with a first-party Node.js backend, built-in email/password authentication, server-side access controls, and private on-disk document storage.
 
 ## What is included
 
-- Email/password registration and login
+- Email/password registration and login handled by the OfficeFlow API
 - User profiles with employee code, department, designation and role
 - Roles: employee, approver, manager, admin
-- Supabase PostgreSQL database with Row Level Security
-- Private document storage using the `office-documents` bucket
+- First-party JSON document database stored under `data/officeflow-db.json`
+- Private file storage under `data/storage/office-documents`
 - Document metadata, status, version, tags and search/filtering
 - Approval inbox with approve/return decisions
 - Audit log for major user actions
@@ -25,39 +25,31 @@ A modern multi-user office-work workspace built around Supabase.
 
 ## Setup
 
-1. Create a Supabase project.
-2. In Supabase SQL Editor, run `supabase-schema.sql`.
-3. In Supabase Storage, create a **private** bucket named `office-documents`.
-4. Copy `supabase-config.example.js` to `supabase-config.js` if needed and put your project URL and anon/publishable key in it.
-5. Open `login.html` through a local/static web server. For example:
+1. Install dependencies with `npm install`.
+2. Set a strong server-only secret: `OFFICEFLOW_AUTH_SECRET="replace-with-a-long-random-secret"`.
+3. Start the application with `npm start`.
+4. Open `http://localhost:10000`.
+
+OfficeFlow creates its database and private storage directories automatically on first start. To store data somewhere else, set:
 
 ```bash
-python -m http.server 8080
+OFFICEFLOW_DATA_DIR=/persistent/officeflow-data
+OFFICEFLOW_STORAGE_DIR=/persistent/officeflow-files
 ```
-
-Then open `http://localhost:8080/login.html`.
 
 ## Important security rule
 
-Only the public anon/publishable Supabase key belongs in browser code. Never put a Supabase service-role/secret key in `supabase-config.js`.
+Keep `OFFICEFLOW_AUTH_SECRET`, database files, and storage files on the server. Browser code talks only to the OfficeFlow API and never needs a database secret.
 
 ## Making the first admin
 
-Register an account, then in Supabase SQL Editor run:
-
-```sql
-update public.profiles
-set role = 'admin'
-where id = (select id from auth.users where email = 'YOUR-ADMIN-EMAIL');
-```
-
-After refreshing OfficeFlow, the **People & Roles** module will be available to that admin.
+The first registered user is promoted to `admin` automatically. Admins and managers can update roles from the **People & Roles** screen.
 
 ## Production next steps
 
 For a full enterprise rollout, add:
 
-- server-side signed-URL/file-preview service for cross-department documents
+- managed persistent disk or object storage backups
 - controlled e-sign / DSC integration if legally required
 - email/WhatsApp/SMS notification provider
 - SSO / organization identity provider
