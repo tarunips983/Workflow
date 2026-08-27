@@ -21,7 +21,8 @@ const HOST = "0.0.0.0";
 
 const FRONTEND_DIR = path.join(__dirname, "..", "Frontend");
 
-const DATA_DIR = process.env.OFFICEFLOW_DATA_DIR || path.join(__dirname, "..", "data");
+const DEFAULT_DATA_DIR = process.env.VERCEL ? path.join("/tmp", "officeflow-data") : path.join(__dirname, "..", "data");
+const DATA_DIR = process.env.OFFICEFLOW_DATA_DIR || DEFAULT_DATA_DIR;
 const STORAGE_DIR = process.env.OFFICEFLOW_STORAGE_DIR || path.join(DATA_DIR, "storage");
 const DB_FILE = path.join(DATA_DIR, "officeflow-db.json");
 const SECRET = process.env.OFFICEFLOW_AUTH_SECRET || "change-this-secret-in-production";
@@ -268,20 +269,20 @@ app.use((err, _req, res, _next) => {
 // START SERVER
 // --------------------------------------------------
 
-app.listen(PORT, HOST, () => {
-  console.log(
-    `OfficeFlow Pro running on ${HOST}:${PORT}`
-  );
+if (require.main === module) {
+  app.listen(PORT, HOST, () => {
+    console.log(
+      `OfficeFlow Pro running on ${HOST}:${PORT}`
+    );
 
-  console.log(
-    `Frontend directory: ${FRONTEND_DIR}`
-  );
+    console.log(
+      `Frontend directory: ${FRONTEND_DIR}`
+    );
 
-  console.log(
-    `OfficeFlow configuration: ${
-      process.env.OFFICEFLOW_URL
-        ? "configured"
-        : "NOT CONFIGURED"
-    }`
-  );
-});
+    console.log(
+      `OfficeFlow data directory: ${DATA_DIR}`
+    );
+  });
+}
+
+module.exports = app;
