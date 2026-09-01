@@ -57,3 +57,17 @@ For a full enterprise rollout, add:
 - immutable audit retention and scheduled backups
 - configurable approval matrix by department / authority / financial limit
 - document version diffing, OCR and retention policy controls
+
+## Vercel deployment: persistent data is required
+
+Vercel server functions have an ephemeral filesystem. Therefore `data/officeflow-db.json` and uploaded files cannot be the production datastore on Vercel: a function restart can make a previously registered account unavailable and can discard uploads. Deploy this JSON-storage edition on a host with a mounted persistent volume, or replace the JSON/file adapters with a managed database and object-storage service before using Vercel for production.
+
+Set a stable `OFFICEFLOW_AUTH_SECRET` in the deployment environment. If you use password reset emails, also configure:
+
+```bash
+RESEND_API_KEY=re_...
+OFFICEFLOW_EMAIL_FROM="OfficeFlow <no-reply@your-domain.com>"
+OFFICEFLOW_APP_URL=https://your-domain.example
+```
+
+The reset endpoint now reports a configuration or delivery failure instead of falsely saying that an email was sent. Reset links expire after 30 minutes and become unusable after a password change.
