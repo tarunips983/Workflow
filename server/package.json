@@ -1,0 +1,5 @@
+{
+  "name":"division-estimate-suite-server","private":true,"version":"1.0.0","type":"module",
+  "scripts":{"dev":"node --watch src/index.js","build":"node -e \"console.log('server build: no transpilation required')\"","start":"node src/index.js"},
+  "dependencies":{"bcryptjs":"latest","cookie-parser":"latest","cors":"latest","dotenv":"latest","express":"latest","jsonwebtoken":"latest","mongoose":"latest","multer":"latest","morgan":"latest"}
+}

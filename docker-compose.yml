@@ -1,0 +1,22 @@
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      MONGODB_URI: mongodb://mongo:27017/division_estimate_suite
+      JWT_SECRET: change-this-in-production
+      SEED_DEMO: "true"
+volumes:
+  mongo_data:
