@@ -1,2 +1,0 @@
--- OfficeFlow now uses the first-party server database under /data/officeflow-db.json.
--- No hosted SQL setup is required. Keep this file only as a migration note for older deployments.
